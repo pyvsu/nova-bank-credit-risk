@@ -93,7 +93,7 @@ An overview of the PowerBI dashboard is shown below, with further examples provi
 ### Scope Limitations
 
 - Nova Bank is fictional; findings describe this dataset only, not real-world lending behavior.
-- Single snapshot of ~25,000 loans (~$232M) — shows recorded outcomes, not how risk evolves over a loan's life.
+- Single snapshot of 25,000 loans ($232M) — shows recorded outcomes, not how risk evolves over a loan's life.
 - Geography shows no meaningful default differentiation *in this portfolio* — reported as a genuine finding, not a general claim about geography and credit risk.
   
 ## Tools & Pipeline
