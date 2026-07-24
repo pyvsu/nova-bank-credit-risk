@@ -1,0 +1,13 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Power BI temp/lock files
+~$*.pbix
+
+# Jupyter/Colab checkpoint folders
+.ipynb_checkpoints/
+
+# Python cache (if you ever run scripts locally)
+__pycache__/
+*.pyc
