@@ -4,8 +4,7 @@ Nova Bank's loan portfolio, 25,000 loans, $232M across the USA, UK, and Canada, 
 
 <img width="1920" height="1110" alt="created" src="https://github.com/user-attachments/assets/0156a9f3-86c2-4717-b3c8-9022ad0d5de6" />
 
-An overview of the PowerBI dashboard is shown below, with further examples provided in the report. You can download the full interactive dashboard [here](dashboard/Nova_Bank_Credit_Risk_Dashboard.pbix).
-
+An overview of the PowerBI dashboard is shown below, with further examples provided in the report. You can explore the full interactive dashboard [here](https://app.powerbi.com/view?r=eyJrIjoiZmEzOTliYWMtNmMzZS00YTAzLTlkNWQtOTFlZGM5YjI2ODNiIiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D&pageName=69862746648799677f90).
 
 ## Project Background
 Nova Bank is a financial institution serving borrowers across the USA, UK, and Canada, offering personal, medical, education, and business loans to a wide range of customers.
@@ -34,7 +33,7 @@ Insights and recommendations are provided on the following key areas:
 
 The SQL script used to clean and prepare the data for this analysis can be found [here](sql/03_clean_and_create_view.sql).
 
-The Power BI dashboard used to explore borrower risk and default trends can be found [here](dashboard/Nova_Bank_Credit_Risk_Dashboard.pbix).
+The Power BI dashboard (.pbix) used to explore borrower risk and default trends can be found [here](dashboard/Nova_Bank_Credit_Risk_Dashboard.pbix).
 
 ## Data Structure & Initial Checks
 Nova Bank's data originated as a single flat file of 32,581 records, which was cleaned and modeled into a star schema consisting of four tables: Fact_CreditRisk, Dim_Borrower, Dim_Geography, and Dim_Loan_Type, with a total row count of 24,738 records after cleaning.
