@@ -4,7 +4,7 @@ Nova Bank's loan portfolio, 25,000 loans, $232M across the USA, UK, and Canada, 
 
 <img width="1920" height="1110" alt="created" src="https://github.com/user-attachments/assets/0156a9f3-86c2-4717-b3c8-9022ad0d5de6" />
 
-An overview of the PowerBI dashboard is shown below, with further examples provided in the report. You can explore the full interactive dashboard [here](https://app.powerbi.com/view?r=eyJrIjoiZmEzOTliYWMtNmMzZS00YTAzLTlkNWQtOTFlZGM5YjI2ODNiIiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D&pageName=69862746648799677f90).
+An overview of the PowerBI dashboard is shown below, with further examples provided in the report. You can explore the full interactive dashboard [here](https://app.powerbi.com/view?r=eyJrIjoiZmEzOTliYWMtNmMzZS00YTAzLTlkNWQtOTFlZGM5YjI2ODNiIiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D).
 
 ## Project Background
 Nova Bank is a financial institution serving borrowers across the USA, UK, and Canada, offering personal, medical, education, and business loans to a wide range of customers.
