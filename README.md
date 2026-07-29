@@ -78,6 +78,55 @@ Nova Bank's data originated as a single flat file of 32,581 records, which was c
 
 Prior to modeling, a variety of checks were conducted for quality control and familiarization with the dataset. The SQL script used to inspect data can be found in [here](sql/02_inspection.sql).
 
+### Measures Matrix
+### Measures Matrix
+
+**Base Measures**
+
+| Measure | Description | DAX |
+|---|---|---|
+| Total Loans | Core count of all loan records in the portfolio | `COUNTROWS('Fact_CreditRisk')` |
+| Total Defaults | Count of loans that ended in default | `CALCULATE([Total Loans], 'Fact_CreditRisk'[loan_status] = 1)` |
+| Total Loan Amount | Sum of all loan principal issued | `SUM('Fact_CreditRisk'[loan_amount])` |
+| Average Income | Average reported borrower income | `AVERAGE('Dim_Borrower'[person_income])` |
+| borrower count | Distinct count of borrowers in the portfolio | `COUNT('Dim_Borrower'[client_ID])` |
+
+**Analytical Measures (Ratios)**
+
+| Measure | Description | DAX |
+|---|---|---|
+| Default Rate | The core risk metric — share of loans that defaulted | `VAR _Defaults = [Total Defaults]`<br>`VAR _Total = [Total Loans]`<br>`RETURN DIVIDE(_Defaults, _Total, 0)` |
+| Average DTI | Average debt-to-income ratio across loans | `AVERAGE('Fact_CreditRisk'[debt_to_income_ratio])` |
+| Average LTI | Average loan-to-income ratio across loans | `AVERAGE('Fact_CreditRisk'[loan_to_income_ratio])` |
+| Total Debt Burden | Combined loan amount plus other outstanding debt | `SUMX('Fact_CreditRisk', 'Fact_CreditRisk'[loan_amount] + 'Fact_CreditRisk'[other_debt])` |
+| Average Debt Burden | Average per-loan debt burden (loan + other debt) | `AVERAGEX('Fact_CreditRisk', 'Fact_CreditRisk'[loan_amount] + 'Fact_CreditRisk'[other_debt])` |
+| Average Credit History | Average length of borrower credit history, in years | `AVERAGE('Dim_Borrower'[cb_person_cred_hist_length])` |
+| Average Interest Rate | Average interest rate across loans | `AVERAGE('Fact_CreditRisk'[loan_int_rate])` |
+
+**Contextual Filters (Targeted Business Questions)**
+
+| Measure | Description | DAX |
+|---|---|---|
+| Default Rate (Prior Default) | Default rate isolated to borrowers with a prior default on file | `DIVIDE(COUNTROWS(FILTER('Fact_CreditRisk', RELATED('Dim_Borrower'[cb_person_default_on_file]) = TRUE() && 'Fact_CreditRisk'[loan_status] = 1)), COUNTROWS(FILTER('Fact_CreditRisk', RELATED('Dim_Borrower'[cb_person_default_on_file]) = TRUE())))` |
+| Default Rate (High DTI) | Default rate isolated to loans with DTI above 40% | `CALCULATE([Default Rate], 'Fact_CreditRisk'[debt_to_income_ratio] > 0.40)` |
+
+**Advanced Segments (Safe vs. Risky Profiles)**
+
+| Measure | Description | DAX |
+|---|---|---|
+| Default Rate (High Risk Profile) | Default rate for borrowers with both a prior default and DTI above 40% | `CALCULATE([Default Rate], 'Dim_Borrower'[cb_person_default_on_file] = TRUE(), 'Fact_CreditRisk'[debt_to_income_ratio] > 0.40)` |
+| Total Loans (Safe Profile) | Count of loans to the "ideal" borrower: homeowner/mortgage-holder with Grade A | `CALCULATE([Total Loans], 'Dim_Borrower'[person_home_ownership] = "MORTGAGE" \|\| 'Dim_Borrower'[person_home_ownership] = "OWN", 'Dim_Loan_Type'[loan_grade] = "A")` |
+
+**Portfolio Benchmarks (Unfiltered Overall Values)**
+
+| Measure | Description | DAX |
+|---|---|---|
+| Overall Default Rate | Portfolio-wide default rate, ignoring any active slicers — used as the benchmark line | `CALCULATE([Default Rate], REMOVEFILTERS())` |
+| Overall Total Loans | Portfolio-wide loan count, ignoring active slicers | `CALCULATE([Total Loans], REMOVEFILTERS())` |
+| Overall Total Loan Amount | Portfolio-wide loan volume, ignoring active slicers | `CALCULATE([Total Loan Amount], REMOVEFILTERS())` |
+| Overall Total Defaults | Portfolio-wide default count, ignoring active slicers | `CALCULATE([Total Defaults], REMOVEFILTERS())` |
+| Overall Default Rate (High Risk Profile) | Portfolio-wide High Risk Profile default rate, ignoring active slicers | `CALCULATE([Default Rate (High Risk Profile)], REMOVEFILTERS())` |
+
 ### Assumptions and Caveats
 #### Data Cleaning Decisions
 
