@@ -35,13 +35,6 @@ The SQL script used to clean and prepare the data for this analysis can be found
 
 The Power BI dashboard (.pbix) used to explore borrower risk and default trends can be found [here](dashboard/Nova_Bank_Credit_Risk_Dashboard.pbix).
 
-## Data Structure & Initial Checks
-Nova Bank's data originated as a single flat file of 32,581 records, which was cleaned and modeled into a star schema consisting of four tables: Fact_CreditRisk, Dim_Borrower, Dim_Geography, and Dim_Loan_Type, with a total row count of 24,738 records after cleaning.
-
-<img width="2280" height="3270" alt="1" src="https://github.com/user-attachments/assets/155011e5-0bf6-47a9-be31-799e3ba6dc34" />
-
-Prior to modeling, a variety of checks were conducted for quality control and familiarization with the dataset. The SQL script used to inspect data can be found in [here](sql/02_inspection.sql).
-
 ## Insights Deep Dive
 ### Executive
 
@@ -77,8 +70,16 @@ Prior to modeling, a variety of checks were conducted for quality control and fa
 - **Keep underwriting policy uniform across country, employment type, and education level.** All three are non-factors — default rates stay flat within roughly 1–2 percentage points (geography: 22.74%–23.07%; employment type: 22.63%–23.57%; education: 21.94%–23.60%). Country- or demographic-specific pricing or approval rules aren't warranted here, which also supports the fair-lending side of the brief: since these attributes carry no real predictive signal, using them as underwriting factors would only introduce disparate impact risk without improving accuracy.
 - **Build a composite early-warning score from the four verified thresholds.** Four independently confirmed signals are already captured in the data — DTI ≥ 0.40 (40.77%), prior default on file (39.08%), interest rate > 15% (60.58%), and renter with LTI ≥ 0.40 (100%, n=682). Combining them into a single risk-monitoring score for the existing portfolio would flag accounts for proactive outreach or collections review before default, not just at origination.
 
-## Assumptions and Caveats
-### Data Cleaning Decisions
+## Methodology
+### Data Structure & Initial Checks
+Nova Bank's data originated as a single flat file of 32,581 records, which was cleaned and modeled into a star schema consisting of four tables: Fact_CreditRisk, Dim_Borrower, Dim_Geography, and Dim_Loan_Type, with a total row count of 24,738 records after cleaning.
+
+<img width="2280" height="3270" alt="1" src="https://github.com/user-attachments/assets/155011e5-0bf6-47a9-be31-799e3ba6dc34" />
+
+Prior to modeling, a variety of checks were conducted for quality control and familiarization with the dataset. The SQL script used to inspect data can be found in [here](sql/02_inspection.sql).
+
+### Assumptions and Caveats
+#### Data Cleaning Decisions
 
 - Missing interest rates (9.5%): imputed with the average rate *per loan grade*, not the dataset-wide average — avoids underpricing Grade G risk or over-penalizing Grade A.
 - Missing employment length (2.7%): imputed with 0 — conservative default for a risk dashboard.
@@ -86,29 +87,29 @@ Prior to modeling, a variety of checks were conducted for quality control and fa
 - Employment length exceeding a plausible working life (> age − 18, or > 60 years): excluded as impossible.
 - `cb_person_default_on_file`: converted from Y/N text to TRUE/FALSE for reliable DAX logic.
 
-### Modeling Assumptions
+#### Modeling Assumptions
 
 - Single-direction cross-filtering (dimension → fact) — standard star schema practice, avoids ambiguous filter propagation.
 - `Dim_Geography` and `Dim_Loan_Type` use surrogate keys (index columns) since the source data had no natural unique ID for location or loan-type combinations.
 
-### Analytical Assumptions
+#### Analytical Assumptions
 
 - No documented default-rate target existed in the brief, so the portfolio's own average (22.9%) was used as the benchmark for every segment comparison, instead of an arbitrary fixed threshold.
 - Credit history buckets (2–4, 5–9, 10–17, 18+ yrs) aren't arbitrary — they came from actually checking the data first. The real distribution of credit history values and their default rates was examined, and the buckets were drawn where the data itself showed a genuine shift in risk, not at evenly-spaced cutoffs.
 
-### Sample Size Caveats
+#### Sample Size Caveats
 
 - OTHER home ownership (n=84): shown for completeness, excluded from firm conclusions.
 - 18+ year credit history bucket (n=280): included but flagged as smaller than the other buckets.
 - OTHER × High LTI (n=5): excluded entirely — too small to support any claim.
 
-### Scope Limitations
+#### Scope Limitations
 
 - Nova Bank is fictional; findings describe this dataset only, not real-world lending behavior.
 - Single snapshot of 25,000 loans ($232M) — shows recorded outcomes, not how risk evolves over a loan's life.
 - Geography shows no meaningful default differentiation *in this portfolio* — reported as a genuine finding, not a general claim about geography and credit risk.
   
-## Tools & Pipeline
+#### Tools & Pipeline
 
 - **Neon (Postgres)** — data warehouse
 - **Google Colab (Python)** — data ingestion pipeline
